@@ -1,0 +1,20 @@
+{
+  "name": "E7戰鬥速度推算工具箱",
+  "short_name": "速度推算",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1a202c",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/6R22tP9G/image.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/6R22tP9G/image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
