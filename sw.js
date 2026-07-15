@@ -2,7 +2,7 @@ const CACHE_NAME = 'e7-calc-v1';
 const ASSETS = [
   'index.html',
   'manifest.json',
-  'https://i.ibb.co/6R22tP9G/image.png'
+  'icon.png'
 ];
 
 self.addEventListener('install', e => {
