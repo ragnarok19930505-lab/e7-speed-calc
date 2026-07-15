@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E7 戰鬥速度推算工具箱</title>
     
-    <!-- PWA 手機 App 設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="E7速度計算機">
+    <meta name="apple-mobile-web-app-title" content="速度推算">
     <link rel="apple-touch-icon" href="icon.png">
     
-    <!-- 引入標準的 manifest.json -->
     <link rel="manifest" href="manifest.json">
 
     <style>
@@ -25,9 +23,28 @@
         h1 {
             text-align: center;
             color: #1a202c;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             font-size: 1.8rem;
         }
+        
+        /* 警語區塊樣式 */
+        .warning-container {
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            background-color: #fffaf0;
+            border-left: 4px solid #dd6b20;
+            padding: 12px 16px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .warning-text {
+            margin: 4px 0;
+            font-size: 0.9rem;
+            color: #dd6b20;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
         .calculator-grid {
             display: flex;
             flex-wrap: wrap;
@@ -132,8 +149,12 @@
 
     <h1>戰鬥速度推算工具箱</h1>
 
+    <div class="warning-container">
+        <p class="warning-text">※ 計算結果僅供參考用，請留意 5% 亂速。</p>
+        <p class="warning-text">※ 不適用於開場提供加速/狂氣的 BUFF、神器拉條、其他角色被動拉條計算。</p>
+    </div>
+
     <div class="calculator-grid">
-        <!-- 智武先手 -->
         <div class="card card-jiwu">
             <h2>智武先手推速</h2>
             <div class="input-group">
@@ -152,7 +173,6 @@
             </div>
         </div>
 
-        <!-- 我方先手 -->
         <div class="card card-my-first">
             <h2>我方先手</h2>
             <div class="input-group">
@@ -199,7 +219,6 @@
             </div>
         </div>
 
-        <!-- 對方先手 (測試中) -->
         <div class="card card-enemy-first">
             <h2>對方先手 (測試中)</h2>
             <div class="input-group">
@@ -220,7 +239,6 @@
     </div>
 
     <script>
-        // 註冊標準 Service Worker 檔案
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
