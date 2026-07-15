@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E7 戰鬥速度推算工具箱</title>
+    
+    <!-- PWA 手機 App 設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="速度推算">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/6R22tP9G/image.png">
+    
+    <!-- 引入標準的 manifest.json -->
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            touch-action: manipulation;
+        }
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .calculator-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            flex: 1;
+            min-width: 320px;
+            max-width: 380px;
+            box-sizing: border-box;
+            border-top: 5px solid #4a5568;
+        }
+        .card-jiwu { border-top-color: #3182ce; }
+        .card-my-first { border-top-color: #38a169; }
+        .card-enemy-first { border-top-color: #e53e3e; }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #2d3748;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .input-row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4a5568;
+        }
+        .card-jiwu input:focus { border-color: #3182ce; }
+        .card-my-first input:focus { border-color: #38a169; }
+        .card-enemy-first input:focus { border-color: #e53e3e; }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-label {
+            font-size: 0.95rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .card-jiwu .result-value { color: #2b6cb0; }
+        .card-my-first .result-value { color: #276749; }
+        .card-enemy-first .result-value { color: #9b2c2c; }
+    </style>
+</head>
+<body>
+
+    <h1>戰鬥速度推算工具箱</h1>
+
+    <div class="calculator-grid">
+        <!-- 智武先手 -->
+        <div class="card card-jiwu">
+            <h2>智武先手推速</h2>
+            <div class="input-group">
+                <label for="jwMySpeed">我方智武速度</label>
+                <input type="number" id="jwMySpeed" placeholder="請輸入速度" oninput="calcJiwu()">
+            </div>
+            <div class="input-group">
+                <label for="jwEnemyBar">對方速攻值 (%)</label>
+                <input type="number" id="jwEnemyBar" placeholder="例如: 95 或 0.95" oninput="calcJiwu()">
+            </div>
+            <div class="result-container">
+                <div class="result-item">
+                    <span class="result-label">對方速度約</span>
+                    <span class="result-value" id="jwResult">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我方先手 -->
+        <div class="card card-my-first">
+            <h2>我方先手</h2>
+            <div class="input-group">
+                <label for="mfMySpeed">我方一速速度</label>
+                <input type="number" id="mfMySpeed" placeholder="請輸入速度" oninput="calcMyFirst()">
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="mfEnemyBar1">對方一速攻值 (%)</label>
+                    <input type="number" id="mfEnemyBar1" placeholder="例如: 95" oninput="calcMyFirst()">
+                </div>
+                <div class="input-group">
+                    <label for="mfEnemyBar2">對方二速攻值 (%)</label>
+                    <input type="number" id="mfEnemyBar2" placeholder="例如: 90" oninput="calcMyFirst()">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="mfEnemyBar3">對方三速攻值 (%)</label>
+                    <input type="number" id="mfEnemyBar3" placeholder="例如: 85" oninput="calcMyFirst()">
+                </div>
+                <div class="input-group">
+                    <label for="mfEnemyBar4">對方四速攻值 (%)</label>
+                    <input type="number" id="mfEnemyBar4" placeholder="例如: 80" oninput="calcMyFirst()">
+                </div>
+            </div>
+            <div class="result-container">
+                <div class="result-item">
+                    <span class="result-label">對方一速約</span>
+                    <span class="result-value" id="mfResult1">--</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">對方二速約</span>
+                    <span class="result-value" id="mfResult2">--</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">對方三速約</span>
+                    <span class="result-value" id="mfResult3">--</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">對方四速約</span>
+                    <span class="result-value" id="mfResult4">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 對方先手 (測試中) -->
+        <div class="card card-enemy-first">
+            <h2>對方先手 (測試中)</h2>
+            <div class="input-group">
+                <label for="efMySpeed">我方一速速度</label>
+                <input type="number" id="efMySpeed" placeholder="請輸入速度" oninput="calcEnemyFirst()">
+            </div>
+            <div class="input-group">
+                <label for="efEnemyBar">對方一速攻值 (%)</label>
+                <input type="number" id="efEnemyBar" placeholder="例如: 15 (比我方多跑的趴數)" oninput="calcEnemyFirst()">
+            </div>
+            <div class="result-container">
+                <div class="result-item">
+                    <span class="result-label">對方一速約</span>
+                    <span class="result-value" id="efResult">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 註冊標準 Service Worker 檔案
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW Registered!', reg))
+                .catch(err => console.log('SW Registration Failed!', err));
+            });
+        }
+
+        function formatBar(val) {
+            let num = parseFloat(val);
+            if (isNaN(num)) return null;
+            if (num > 1.5) {
+                num = num / 100;
+            }
+            return num;
+        }
+
+        function calcJiwu() {
+            const mySpeed = parseFloat(document.getElementById('jwMySpeed').value);
+            const rawBar = document.getElementById('jwEnemyBar').value;
+            const enemyBar = formatBar(rawBar);
+
+            if (isNaN(mySpeed) || enemyBar === null) {
+                document.getElementById('jwResult').innerText = '--';
+                return;
+            }
+            const result = (mySpeed / 0.7) * enemyBar;
+            document.getElementById('jwResult').innerText = result.toFixed(1);
+        }
+
+        function calcMyFirst() {
+            const mySpeed = parseFloat(document.getElementById('mfMySpeed').value);
+            for (let i = 1; i <= 4; i++) {
+                const rawBar = document.getElementById('mfEnemyBar' + i).value;
+                const enemyBar = formatBar(rawBar);
+                const resultElement = document.getElementById('mfResult' + i);
+
+                if (isNaN(mySpeed) || enemyBar === null) {
+                    resultElement.innerText = '--';
+                } else {
+                    const result = mySpeed * enemyBar;
+                    resultElement.innerText = result.toFixed(1);
+                }
+            }
+        }
+
+        function calcEnemyFirst() {
+            const mySpeed = parseFloat(document.getElementById('efMySpeed').value);
+            const rawBar = parseFloat(document.getElementById('efEnemyBar').value);
+
+            if (isNaN(mySpeed) || isNaN(rawBar)) {
+                document.getElementById('efResult').innerText = '--';
+                return;
+            }
+            let barRatio = rawBar;
+            if (rawBar > 1.5) {
+                barRatio = rawBar / 100;
+            }
+            const result = (barRatio + 1) * mySpeed;
+            document.getElementById('efResult').innerText = result.toFixed(1);
+        }
+    </script>
+</body>
+</html>
